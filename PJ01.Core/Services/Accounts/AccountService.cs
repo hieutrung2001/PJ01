@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using PJ01.Core.Helpers.Enums;
 using PJ01.Core.ViewModels.Requests.Accounts;
 using PJ01.Domain.Entities.Identity;
 
@@ -8,11 +9,13 @@ namespace PJ01.Core.Services.Accounts
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task<bool> Login(LoginViewModel model)
@@ -32,7 +35,14 @@ namespace PJ01.Core.Services.Accounts
 
             if (result.Succeeded)
             {
+                bool x = await _roleManager.RoleExistsAsync(UserRoles.ADMIN.ToString().ToLower());
+                if (!x)
+                {
+                    var role = new IdentityRole { Name = UserRoles.ADMIN.ToString() };
+                    await _roleManager.CreateAsync(role);
+                }
                 await _signInManager.SignInAsync(user, false);
+                await _userManager.AddToRoleAsync(user, UserRoles.ADMIN.ToString().ToLower());
                 return true;
             }
             return false;

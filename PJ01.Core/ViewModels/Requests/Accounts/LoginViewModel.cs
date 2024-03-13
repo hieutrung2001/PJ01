@@ -9,5 +9,7 @@ namespace PJ01.Core.ViewModels.Requests.Accounts
         [Required(ErrorMessage = "Please enter your password"), DataType(DataType.Password)]
         public string Password { get; set; }
         public string? ReturnUrl { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
 }

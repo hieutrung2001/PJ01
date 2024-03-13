@@ -8,7 +8,7 @@ using PJ01.Domain.Context;
 
 #nullable disable
 
-namespace PJ01.Domain.Migrations
+namespace PJ01.WebAPI.Migrations
 {
     [DbContext(typeof(PJ01Context))]
     partial class PJ01ContextModelSnapshot : ModelSnapshot

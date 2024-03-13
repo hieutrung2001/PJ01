@@ -9,10 +9,10 @@ using PJ01.Domain.Context;
 
 #nullable disable
 
-namespace PJ01.Domain.Migrations
+namespace PJ01.WebAPI.Migrations
 {
     [DbContext(typeof(PJ01Context))]
-    [Migration("20240313022828_InitialCreate")]
+    [Migration("20240313144414_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

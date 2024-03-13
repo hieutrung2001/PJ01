@@ -1,0 +1,6 @@
+@base_url = http://localhost:5187
+
+POST {{base_url}}/api/accounts/login
+Accept: application/json
+
+###
