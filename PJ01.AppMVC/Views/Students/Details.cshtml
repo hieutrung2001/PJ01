@@ -1,0 +1,54 @@
+﻿@model PJ01.Core.ViewModels.Requests.Students.EditViewModel
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="row d-flex justify-content-center mt-lg-5">
+    <div class="col-4">
+        <h3 class="text-center">Details</h3>
+        <hr />
+        <form method="post" id="formEditStudent">
+            <input type="hidden" asp-for="Id" />
+            <!-- Fullname input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" asp-for="FullName" class="form-control" />
+                <label class="form-label" asp-for="FullName"></label>
+            </div>
+
+            <!-- Date of birth input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="Dob" class="form-control" />
+                <label class="form-label" asp-for="Dob"></label>
+            </div>
+
+            <!-- Phone number input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="PhoneNumber" class="form-control" />
+                <label class="form-label" asp-for="PhoneNumber"></label>
+            </div>
+
+            <!-- Address input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="Address" class="form-control" />
+                <label class="form-label" asp-for="Address"></label>
+            </div>
+
+            <!-- Submit button -->
+            <div class="form-group d-flex justify-content-between">
+                <button type="button" class="btn bg-secondary" id="btnPrevious" data-mdb-ripple-init>Back</button>
+            </div>
+            @* <button data-mdb-ripple-init type="button" id="btnSubmit" class="btn btn-primary btn- mb-4">Save</button>
+            *@
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            $('#btnPrevious').on('click', () => {
+                window.location = '@Url.Action("Index", "Students")';
+            })
+        })
+    </script>
+}

@@ -1,0 +1,114 @@
+﻿@model IEnumerable<PJ01.Core.ViewModels.Requests.Students.IndexModel>
+
+<h2>Student List</h2>
+<hr />
+<button type="button" id="createStudent" class="btn btn-primary mb-5" data-mdb-ripple-init>Create</button>
+@Html.AntiForgeryToken()
+<table id="studentListTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>@Html.DisplayNameFor(model => model.StudentClasses)</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>Options</th>
+        </tr>
+    </thead>
+</table>
+@section Scripts {
+    <script>
+        $(document).ready(() => {
+            new DataTable('#studentListTable', {
+                lengthMenu: [
+                    [5, 10, 25, -1],
+                    [5, 10, 25, 'All']
+                ],
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: '@Url.Action("LoadTable", "Students")',
+                    type: 'POST',
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    dataType: 'JSON',
+                },
+                // rowReorder: true,
+                columnDefs: [
+                    {
+                        orderable: true, className: 'reorder', targets: [0, 2]
+                    },
+                    {
+                        orderable: false, targets: '_all'
+                    },
+                ],
+                columns: [
+                    {
+                        data: "fullName",
+                        name: "FullName"
+                    },
+                    {
+                        data: "studentClasses",
+                        name: "StudentClasses"
+                    },
+                    { data: "address", name: "Address" },
+                    {
+                        data: "id",
+                        render: function (id, type, row, meta) {
+                            return `<button type="button" class="btn btn-primary w-0">
+                                        <a href="/Students/Edit/${id}" class="text-white edit-button">Edit</a>
+                            </button>
+                                    <button type="button" class="btn btn-info w-0">
+                                        <a href="/Students/Details/${id}" class="text-white detail-button">Detail</a>
+                            </button>
+                                    <button type="button" onclick="DeleteStudent(this)" class="btn btn-danger w-0 delete-button" data-url="/Students/Delete/${id}"><a class="text-white">Delete</a></button>`;
+                        }
+                    },
+                ],
+            });
+
+            // create student
+            $('#createStudent').click(() => {
+                window.location = '@Url.Action("Create", "Students")';
+            })
+
+         
+
+        })
+        function DeleteStudent(e) {
+            let url = $(e).data('url');
+            $.ajax({
+                url: url,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                type: "DELETE",
+                dataType: "JSON",
+                success: function (data) {
+                    $.toast({
+                        heading: 'Success',
+                        text: 'Successfully!',
+                        showHideTransition: 'slide',
+                        icon: 'success',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                        beforeHide: function () {
+                            window.location = '@Url.Action("Index", "Students")'
+                        }
+                    })
+                },
+                error: function (error) {
+                    $.toast({
+                        heading: 'Error',
+                        text: error,
+                        showHideTransition: 'fade',
+                        icon: 'error',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                    })
+                }
+            });
+        }
+    </script>
+}

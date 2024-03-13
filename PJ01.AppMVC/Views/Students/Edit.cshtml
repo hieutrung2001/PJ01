@@ -1,0 +1,99 @@
+﻿@model PJ01.Core.ViewModels.Requests.Students.EditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@Html.AntiForgeryToken()
+<div class="row d-flex justify-content-center mt-lg-5">
+    <div class="col-4">
+        <h3 class="text-center">Edit Student</h3>
+        <hr />
+        <form method="post" id="formEditStudent">
+            <input type="hidden" asp-for="Id" />
+            <!-- Fullname input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" asp-for="FullName" class="form-control" />
+                <label class="form-label" asp-for="FullName"></label>
+                <span asp-validation-for="FullName"></span>
+            </div>
+
+            <!-- Date of birth input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="Dob" class="form-control" disabled />
+                <label class="form-label" asp-for="Dob"></label>
+                <span asp-validation-for="Dob"></span>
+            </div>
+
+            <!-- Phone number input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="PhoneNumber" class="form-control" />
+                <label class="form-label" asp-for="PhoneNumber"></label>
+                <span asp-validation-for="PhoneNumber"></span>
+            </div>
+
+            <!-- Address input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input asp-for="Address" class="form-control" />
+                <label class="form-label" asp-for="Address"></label>
+                <span asp-validation-for="Address"></span>
+            </div>
+
+            <!-- Submit button -->
+            <div class="form-group d-flex justify-content-between">
+                <button type="button" class="btn bg-secondary" id="btnPrevious" data-mdb-ripple-init>Back</button>
+                <button type="button" class="btn btn-primary" id="btnSubmit" data-mdb-ripple-init>Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    $(document).ready(() => {
+        $('#btnPrevious').on('click', () => {
+            window.location = '@Url.Action("Index", "Students")'
+        })
+
+        // edit student
+        $("#btnSubmit").click(function (e) {
+            debugger
+            var valData = $("#formEditStudent").serialize();
+            $.ajax({
+                url: "/Students/Edit/" + $('#Id').val(),
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                type: "PUT",
+                contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                dataType: "JSON",
+                data: valData,
+                success: function (data) {
+                    console.log(data)
+                    $.toast({
+                        heading: 'Success',
+                        text: 'Successfully!',
+                        showHideTransition: 'slide',
+                        icon: 'success',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                        beforeHide: function() {
+                            window.location = '@Url.Action("Index", "Students")';
+                        }
+                    })
+                },
+                error: function (error) {
+                    $.toast({
+                        heading: 'Error',
+                        text: error,
+                        showHideTransition: 'fade',
+                        icon: 'error',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                    })
+                }
+            });
+        });
+    })
+</script>
+}

@@ -1,0 +1,105 @@
+﻿@model IEnumerable<PJ01.Core.ViewModels.Requests.Classes.IndexModel>
+@{
+}
+
+<h2>Class List</h2>
+<hr />
+<button type="button" id="createClass" class="btn btn-primary mb-5" data-mdb-ripple-init>Create</button>
+@Html.AntiForgeryToken()
+<table id="classListTable" class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StudentClasses)
+            </th>
+            <th>Options</th>
+        </tr>
+    </thead>
+</table>
+@section Scripts {
+    <script>
+            $(document).ready(() => {
+                new DataTable('#classListTable', {
+                    lengthMenu: [
+                        [5, 10, 25, -1],
+                        [5, 10, 25, 'All']
+                    ],
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '@Url.Action("LoadTable", "Classes")',
+                        type: 'POST',
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        dataType: 'JSON',
+                    },
+                    columns: [
+                        {
+                            data: "name",
+                            name: "Name"
+                        },
+                        {
+                            data: "studentClasses",
+                            name: "StudentClasses"
+                        },
+                        {
+                            data: "id",
+                            render: function (id, type, row, meta) {
+                                return `<button type="button" class="btn btn-primary w-0">
+                                                            <a href="/Classes/Edit/${id}" class="text-white edit-button">Edit</a>
+                                        </button>
+                                                <button type="button" class="btn btn-info w-0">
+                                                    <a href="/Classes/Details/${id}" class="text-white detail-button">Detail</a>
+                                        </button>
+                                                <button type="button" onclick="DeleteClass(this)" class="btn btn-danger w-0" data-url="/Classes/Delete/${id}"><a>Delete</a></button>`;
+                            }
+                        },
+                    ],
+                })
+
+                // form create
+                $('#createClass').on('click', () => {
+                    window.location = '@Url.Action("Create", "Classes")';
+
+                })
+            });
+
+            
+        function DeleteClass(e) {
+            let url = $(e).data('url')
+            $.ajax({
+                url: url,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                type: "DELETE",
+                dataType: "JSON",
+                success: function (data) {
+                    $.toast({
+                        heading: 'Success',
+                        text: 'Successfully!',
+                        showHideTransition: 'slide',
+                        icon: 'success',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                        beforeHide: function () {
+                            window.location = '@Url.Action("Index", "Classes")'
+                        }
+                    })
+                },
+                error: function (error) {
+                    $.toast({
+                        heading: 'Error',
+                        text: error,
+                        showHideTransition: 'fade',
+                        icon: 'error',
+                        position: 'top-right',
+                        allowToastClose: true,
+                        stack: false,
+                    })
+                }
+            });
+        }
+    </script>
+}

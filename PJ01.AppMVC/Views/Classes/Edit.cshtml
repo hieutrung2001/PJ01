@@ -1,0 +1,86 @@
+﻿@model PJ01.Core.ViewModels.Requests.Classes.EditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@Html.AntiForgeryToken()
+<div class="row d-flex justify-content-center mt-lg-5">
+    <div class="col-4">
+        <h3 class="text-center">Edit Class</h3>
+        <hr />
+        <form method="post" id="formEditClass">
+            <input type="hidden" asp-for="Id" />
+            <!-- Fullname input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" asp-for="Name" class="form-control" />
+                <label class="form-label" asp-for="Name"></label>
+            </div>
+
+
+            <div class="mb-3">
+                <label>Select</label>
+                <select id="autoSelect2" multiple class="form-control" asp-for="StudentSelectList" asp-items="ViewBag.StudentSelectList"></select>
+            </div>
+
+            <!-- Submit button -->
+            <div class="form-group d-flex justify-content-between">
+                <button type="button" class="btn bg-secondary" id="btnPrevious" data-mdb-ripple-init>Back</button>
+                <button type="button" class="btn btn-primary" id="btnSubmit" data-mdb-ripple-init>Save</button>
+            </div>
+            @* <button data-mdb-ripple-init type="button" id="btnSubmit" class="btn btn-primary btn- mb-4">Save</button>
+            *@
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/mdb5/js/mdb.umd.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            $('#autoSelect2').select2();
+
+            $('#btnPrevious').on('click', () => {
+                window.location = '@Url.Action("Index", "Classes")';
+            })
+
+            // create student
+            $("#btnSubmit").click(function (e) {
+                var valData = $("#formEditClass").serialize();
+                $.ajax({
+                    url: "/Classes/Edit/" + $('#Id').val(),
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    type: "PUT",
+                    contentType: "application/x-www-form-urlencoded;charset=utf-8",
+                    dataType: "JSON",
+                    data: valData,
+                    success: function (data) {
+                        console.log(data)
+                        $.toast({
+                            heading: 'Success',
+                            text: 'Successfully!',
+                            showHideTransition: 'slide',
+                            icon: 'success',
+                            position: 'top-right',
+                            allowToastClose: true,
+                            stack: false,
+                            beforeHide: function () {
+                                window.location = '@Url.Action("Index", "CLasses")'
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        $.toast({
+                            heading: 'Error',
+                            text: error,
+                            showHideTransition: 'fade',
+                            icon: 'error',
+                            position: 'top-right',
+                            allowToastClose: true,
+                            stack: false,
+                        })
+                    }
+                });
+            });
+        })
+    </script>
+}

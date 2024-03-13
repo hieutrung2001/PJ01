@@ -1,0 +1,57 @@
+﻿@model PJ01.Core.ViewModels.Requests.Accounts.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+@Html.AntiForgeryToken()
+<link href="~/css/login.css" rel="stylesheet" />
+<div class="row d-flex justify-content-center mt-lg-5">
+    <div class="col-4">
+        <h3 class="text-center">Login</h3>
+        <hr />
+        <form method="post" id="formLogin" class="needs-validation" asp-route-returnurl="@Model?.ReturnUrl" asp-action="Login" asp-controller="Accounts">
+            <div asp-validation-summary="ModelOnly">
+                <span>Please correct the following errors</span>
+            </div>
+
+            <!-- Email input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="text" asp-for="UserName" class="form-control" />
+                <label class="form-label" asp-for="UserName">Username</label>
+                <span asp-validation-for="UserName"></span>
+            </div>
+
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="password" asp-for="Password" class="form-control" />
+                <label class="form-label" asp-for="Password">Password</label>
+                <span asp-validation-for="Password"></span>
+            </div>
+
+            <!-- Submit button -->
+            <button data-mdb-ripple-init type="submit" id="btnSubmit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Not a member? <a asp-action="Register">Register</a></p>
+                <p>or sign up with:</p>
+                <button data-mdb-ripple-init type="button" class="btn btn-secondary btn-floating mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+
+                <button data-mdb-ripple-init type="button" class="btn btn-secondary btn-floating mx-1">
+                    <i class="fab fa-google"></i>
+                </button>
+
+                <button data-mdb-ripple-init type="button" class="btn btn-secondary btn-floating mx-1">
+                    <i class="fab fa-twitter"></i>
+                </button>
+
+                <button data-mdb-ripple-init type="button" class="btn btn-secondary btn-floating mx-1">
+                    <i class="fab fa-github"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
