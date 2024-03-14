@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Classes;
