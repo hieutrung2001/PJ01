@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PJ01.Domain.Context;
+using PJ01.Infrastructure.Context;
 
 #nullable disable
 
-namespace PJ01.WebAPI.Migrations
+namespace PJ01.Database.Migrations
 {
     [DbContext(typeof(PJ01Context))]
-    [Migration("20240313144414_InitialCreate")]
+    [Migration("20240314044038_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -270,8 +270,8 @@ namespace PJ01.WebAPI.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("Dob")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
                         .IsRequired()

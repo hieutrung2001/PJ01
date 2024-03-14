@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJ01.Core.Interfaces.Repositories;
-using PJ01.Domain.Context;
 using PJ01.Domain.Entities;
+using PJ01.Infrastructure.Context;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace PJ01.Infrastructure.Repositories
 {
-    public class RepositoryBase<T> : IRepository<T> where T : class , IBaseEntity
+    public class RepositoryBase<T> : IRepository<T> where T : class, IBaseEntity
     {
         protected PJ01Context _context;
 

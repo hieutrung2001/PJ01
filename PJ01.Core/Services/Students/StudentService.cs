@@ -1,23 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using PJ01.Core.Interfaces.Repositories;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Students;
-using PJ01.Domain.Context;
 using PJ01.Domain.Entities;
 
 namespace PJ01.Core.Services.Students
 {
     public class StudentService : IStudentService
     {
-        private readonly PJ01Context _context;
+        private readonly IStudentRepository _repository;
+        private readonly IMapper _mapper;
 
-        public StudentService(PJ01Context context)
+        public StudentService(IStudentRepository repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<List<Student>> GetAll()
         {
-            return await _context.Students.AsNoTracking().Select(x => new Student
+            var results = await _repository.QueryAsync();   
+            return results.Select(x => new Student
             {
                 Id = x.Id,
                 FullName = x.FullName,
@@ -25,14 +28,15 @@ namespace PJ01.Core.Services.Students
                 PhoneNumber = x.PhoneNumber,
                 Address = x.Address,
                 StudentClasses = x.StudentClasses,
-            }).ToListAsync();
+            }).ToList();
         }
 
         public async Task<JsonData<IndexModel>> LoadTable(Pagination model)
         {
-            int recordsTotal = await _context.Students.CountAsync();
+            var records = await _repository.QueryAsync();
+            int recordsTotal = records.Count;
             int recordsFiltered = recordsTotal;
-            var results = await _context.Students.AsNoTracking().Select(x => new IndexModel
+            var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
                 FullName = x.FullName,
@@ -40,7 +44,7 @@ namespace PJ01.Core.Services.Students
                 PhoneNumber = x.PhoneNumber,
                 Address = x.Address,
                 StudentClasses = x.StudentClasses,
-            }).Skip(model.Start).Take(model.Length).ToListAsync();
+            }, pageSize: model.Length, page: model.Start / model.Length);
             if (model.Order != null)
             {
                 if (model.Order[0].Dir == "asc")
@@ -72,42 +76,47 @@ namespace PJ01.Core.Services.Students
                 recordsFiltered = results.Count();
             }
             
-            return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = results };
+            return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }
 
         public async Task<Student> GetStudentById(int id)
         {
-            var result1 = await _context.Students.AsNoTracking().Where(x => x.Id == id).FirstAsync();
-            return result1;
+            var result = await _repository.Get(id);
+            return result;
         }
 
-        public async Task<Student> Create(Student student)
+        public async Task<Student> Create(CreateViewModel model)
         {
-            _context.Students.Add(student);
-            await _context.SaveChangesAsync();
-            return student;
+            try
+            {
+                var student = _mapper.Map<Student>(model);
+                await _repository.Add(student);
+                return student;
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<Student> Update(Student student)
         {
-            
-            var result = _context.Students.Find(student.Id);
+
+            var result = await _repository.Get(student.Id);
             result.FullName = student.FullName;
             result.Address = student.Address;
             result.PhoneNumber = student.PhoneNumber;
-            await _context.SaveChangesAsync();
+            await _repository.Update(result);
             return student;
         }
 
         public async Task Delete(int id)
         {
-            var student = _context.Students.Find(id);
+            var student = await _repository.Get(id);
             if (student == null)
             {
                 throw new Exception("Student not found!");
             }
-            _context.Students.Remove(student);
-            await _context.SaveChangesAsync();
+            await _repository.Delete(student);
             
         }
 

@@ -11,7 +11,7 @@ namespace PJ01.Core.Services.Students
         Task<List<Student>> GetAll();
         Task<List<Student>> GetStudentsOfClass(int classId);
         Task<Student> GetStudentById(int id);
-        Task<Student> Create(Student student);
+        Task<Student> Create(CreateViewModel student);
         Task<Student> Update(Student student);
         Task Delete(int id);
     }

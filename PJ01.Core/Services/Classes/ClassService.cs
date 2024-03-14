@@ -1,30 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Classes;
-using PJ01.Domain.Context;
 using PJ01.Domain.Entities;
+using PJ01.Core.Interfaces.Repositories;
 
 namespace T1PJ.Core.Services.Classes
 {
     public class ClassService : IClassService
     {
-        private readonly PJ01Context _context;
+        private readonly IClassRepository _repository;
 
-        public ClassService(PJ01Context context)
+        public ClassService(IClassRepository classRepository)
         {
-            _context = context;
+            _repository = classRepository;
         }
 
         public async Task<JsonData<IndexModel>> LoadTable(Pagination model)
         {
-            int recordsTotal = await _context.Classes.CountAsync();
+            var records = await _repository.QueryAsync();
+            int recordsTotal = records.Count;
             int recordsFiltered = recordsTotal;
-            var results = await _context.Classes.AsNoTracking().Select(x => new IndexModel
+            var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 StudentClasses = x.StudentClasses,
-            }).Skip(model.Start).Take(model.Length).ToListAsync();
+            }, pageSize: model.Length, page: model.Start / model.Length);
             if (model.Order != null)
             {
                 if (model.Order[0].Dir == "asc")
@@ -48,54 +49,44 @@ namespace T1PJ.Core.Services.Classes
                 recordsFiltered = results.Count();
             }
 
-            return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = results };
+            return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }
         public async Task<List<Class>> GetAll()
         {
-            return await _context.Classes.AsNoTracking().Select(x => new Class
+            var results = await _repository.QueryAsync();
+            return results.Select(x => new Class
             {
                 Id = x.Id,
                 Name = x.Name,
                 StudentClasses = x.StudentClasses,
-            }).ToListAsync();
+            }).ToList();
         }
 
         public async Task<Class> GetClassById(int id)
         {
-            var result = await _context.Classes.AsNoTracking().Select(x => new Class
-            {
-                Id = x.Id,
-                Name = x.Name,
-                StudentClasses = x.StudentClasses,
-            }).FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _repository.Get(id, "StudentClasses");
             return result;
         }
 
         public async Task Create(Class c)
         {
-            _context.Classes.Add(c);
-            await _context.SaveChangesAsync();
-            if (c.StudentClasses?.Count > 0)
-            {
-                foreach (var item in c.StudentClasses)
-                {
-                    item.ClassId = c.Id;
-                    _context.StudentClasses.Add(new StudentClass { ClassId = c.Id, StudentId = item.StudentId });
-                }
-                _context.Classes.Update(c);
-                await _context.SaveChangesAsync();
-            }
+            await _repository.Add(c);
+            //if (c.StudentClasses?.Count > 0)
+            //{
+            //    foreach (var item in c.StudentClasses)
+            //    {
+            //        item.ClassId = c.Id;
+            //        //_context.StudentClasses.Add(new StudentClass { ClassId = c.Id, StudentId = item.StudentId });
+            //    }
+            //    await _repository.Update(c);
+            //}
         }
 
         public async Task Update(Class c)
         {
-            var c1 = _context.Classes.Select(x => new Class
-            {
-                Id = x.Id,
-                StudentClasses = x.StudentClasses,
-            }).FirstOrDefault(s => s.Id == c.Id);
+            var c1 = await _repository.Get(c.Id);
             c1.Name = c.Name;
-            if (c1.StudentClasses.Count > 0)
+            if (c1.StudentClasses?.Count > 0)
             {
                 var results = c.StudentClasses;
                 List<bool> checks = new List<bool>(results.Count);
@@ -110,8 +101,7 @@ namespace T1PJ.Core.Services.Classes
                     }
                     else
                     {
-                        _context.StudentClasses.Remove(item);
-                        
+                        c1.StudentClasses.Remove(item);                        
                     }
                 }
                 for (var i = 0; i < c.StudentClasses.Count; ++i)
@@ -120,31 +110,30 @@ namespace T1PJ.Core.Services.Classes
                     {
                         var studentClass = new StudentClass { ClassId = c.Id, StudentId = c.StudentClasses[i].StudentId };
                         c1.StudentClasses.Add(studentClass);
-                        _context.StudentClasses.Add(studentClass);
+                        c1.StudentClasses.Add(studentClass);
                     }
                 }
                 //_context.Classes.Update(c1);
             } else
             {
+                c1.StudentClasses = new List<StudentClass>();
                 foreach (var item in c.StudentClasses)
                 {
                     var studentClass = new StudentClass { ClassId = c.Id, StudentId = item.StudentId };
                     c1.StudentClasses.Add(studentClass);
-                    _context.StudentClasses.Add(studentClass);
                 }
             }
-            await _context.SaveChangesAsync();
+            await _repository.Update(c1);
         }
 
         public async Task Delete(int id)
         {
-            var c = _context.Classes.Find(id);
+            var c = await _repository.Get(id);
             if (c is null)
             {
                 throw new Exception("Class not found!");
             }
-            _context.Classes.Remove(c);
-            await _context.SaveChangesAsync();
+            await _repository.Delete(c);
         }
     }
 }

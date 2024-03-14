@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PJ01.WebAPI.Migrations
+namespace PJ01.Database.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -74,7 +74,7 @@ namespace PJ01.WebAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dob = table.Column<DateOnly>(type: "date", nullable: false),
+                    Dob = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PhoneNumber = table.Column<int>(type: "int", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),

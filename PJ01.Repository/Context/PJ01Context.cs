@@ -4,7 +4,7 @@ using PJ01.Domain.Config;
 using PJ01.Domain.Entities;
 using PJ01.Domain.Entities.Identity;
 
-namespace PJ01.Domain.Context
+namespace PJ01.Infrastructure.Context
 {
     public class PJ01Context : IdentityDbContext<User>
     {

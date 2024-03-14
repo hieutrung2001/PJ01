@@ -8,7 +8,7 @@ namespace PJ01.Core.ViewModels.Requests.Students
         public string FullName { get; set; }
         [Required]
         [DataType(DataType.Date)]
-        public DateOnly Dob { get; set; }
+        public DateTime Dob { get; set; }
         [Required]
         public int PhoneNumber { get; set; }
         [Required]

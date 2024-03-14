@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PJ01.Core.Extensions;
-using PJ01.Domain.Context;
+using PJ01.Infrastructure.Context;
 using PJ01.Domain.Entities.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using PJ01.Core.Helpers.Mappers;
+using PJ01.Core.Interfaces.Repositories;
+using PJ01.Infrastructure.Repositorises;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddDbContext<PJ01Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PJ01Connect") ?? throw new InvalidOperationException("Connection string 'PJ01Context' not found."), b => b.MigrationsAssembly("PJ01.WebAPI")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PJ01Connect")));
 
 builder.Services.AddApplicationServices();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -50,6 +52,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 builder.Services.AddAutoMapper(typeof(StudentProfile));
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 
 var app = builder.Build();
 
@@ -59,7 +63,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

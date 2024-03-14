@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PJ01.Domain.Context;
+using PJ01.Infrastructure.Context;
 
 #nullable disable
 
-namespace PJ01.WebAPI.Migrations
+namespace PJ01.Database.Migrations
 {
     [DbContext(typeof(PJ01Context))]
     partial class PJ01ContextModelSnapshot : ModelSnapshot
@@ -267,8 +267,8 @@ namespace PJ01.WebAPI.Migrations
                     b.Property<DateTime>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("Dob")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
                         .IsRequired()

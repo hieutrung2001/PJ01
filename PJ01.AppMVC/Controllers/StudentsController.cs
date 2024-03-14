@@ -36,7 +36,7 @@ namespace PJ01.AppMVC.Controllers
         {
             CreateViewModel model = new CreateViewModel
             {
-                Dob = DateOnly.FromDateTime(DateTime.Now),
+                Dob = DateTime.Now,
             };
             return View(model);
         }
@@ -47,8 +47,7 @@ namespace PJ01.AppMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                Student student = _mapper.Map<Student>(model);
-                if (await _service.Create(student) != null)
+                if (await _service.Create(model) != null)
                 {
                     return Json(new { status = true });
                 }

@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PJ01.Core\PJ01.Core.csproj" />
     <ProjectReference Include="..\PJ01.Domain\PJ01.Domain.csproj" />
+    <ProjectReference Include="..\PJ01.Repository\PJ01.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

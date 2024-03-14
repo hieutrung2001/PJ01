@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PJ01.Core.Services.Students;
+using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Students;
+using PJ01.Domain.Entities;
 
 namespace PJ01.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "ADMIN")]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _studentService;
@@ -20,8 +21,15 @@ namespace PJ01.WebAPI.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("")]
+        public async Task<ActionResult> Index([FromBody] Pagination model)
+        {
+            var results = await _studentService.LoadTable(model);
+            return Ok(results);
+        }
+
         [HttpGet("details/{id}")]
-        public async Task<ActionResult> GetStudent(int id)
+        public async Task<ActionResult> Details(int id)
         {
             var student = await _studentService.GetStudentById(id);
             if (student == null)
@@ -30,6 +38,46 @@ namespace PJ01.WebAPI.Controllers
             }
             var result = _mapper.Map<EditViewModel>(student);
             return Ok(result);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                await _studentService.Delete(id);
+                return Ok();
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("create")]
+        public async Task<ActionResult> Create([FromBody] CreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Student student = await _studentService.Create(model);
+                    return Ok(student);
+                } catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("edit/{id}")]
+        public async Task<ActionResult> Edit(int id, [FromBody] EditViewModel model)
+        {
+            if (ModelState.IsValid && model.Id == id)
+            {
+                return NotFound();
+            }
+            return Ok();
         }
 
     }
