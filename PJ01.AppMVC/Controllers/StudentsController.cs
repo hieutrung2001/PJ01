@@ -72,8 +72,7 @@ namespace PJ01.AppMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var student = _mapper.Map<Student>(model);
-                if (await _service.Update(student) != null)
+                if (await _service.Update(model) != null)
                 {
                     return Json(new { status = true });
                 }

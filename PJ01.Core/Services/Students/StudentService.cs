@@ -98,7 +98,7 @@ namespace PJ01.Core.Services.Students
             }
         }
 
-        public async Task<Student> Update(Student student)
+        public async Task<Student> Update(EditViewModel student)
         {
 
             var result = await _repository.Get(student.Id);
@@ -106,7 +106,7 @@ namespace PJ01.Core.Services.Students
             result.Address = student.Address;
             result.PhoneNumber = student.PhoneNumber;
             await _repository.Update(result);
-            return student;
+            return result;
         }
 
         public async Task Delete(int id)

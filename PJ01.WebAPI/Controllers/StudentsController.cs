@@ -75,9 +75,10 @@ namespace PJ01.WebAPI.Controllers
         {
             if (ModelState.IsValid && model.Id == id)
             {
-                return NotFound();
+                var result = await _studentService.Update(model);
+                return Ok(result);
             }
-            return Ok();
+            return BadRequest();
         }
 
     }
