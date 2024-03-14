@@ -26,7 +26,6 @@ namespace PJ01.AppMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var model = _mapper.Map<List<DataLayer.Model.Classes.IndexModel>>(await _classService.GetAll());
             return View();
         }
 

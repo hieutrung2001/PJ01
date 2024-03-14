@@ -21,11 +21,11 @@ namespace PJ01.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("")]
+        [HttpPost("")]
         public async Task<ActionResult> Index([FromBody] Pagination model)
         {
-            var results = await _studentService.LoadTable(model);
-            return Ok(results);
+            var result = await _studentService.LoadTable(model);
+            return Ok(result);
         }
 
         [HttpGet("details/{id}")]

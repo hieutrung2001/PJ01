@@ -6,7 +6,6 @@ namespace PJ01.Core.ViewModels.Requests.Classes
     public class EditViewModel
     {
         public int Id { get; set; }
-        [Required]
         public string Name { get; set; }
         public List<StudentClass> StudentClasses { get; set; }
         public List<int> StudentSelectList { get; set; }

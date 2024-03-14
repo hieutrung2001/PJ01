@@ -51,16 +51,6 @@ namespace T1PJ.Core.Services.Classes
 
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }
-        public async Task<List<Class>> GetAll()
-        {
-            var results = await _repository.QueryAsync();
-            return results.Select(x => new Class
-            {
-                Id = x.Id,
-                Name = x.Name,
-                StudentClasses = x.StudentClasses,
-            }).ToList();
-        }
 
         public async Task<Class> GetClassById(int id)
         {
