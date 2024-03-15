@@ -55,6 +55,10 @@ namespace T1PJ.Core.Services.Classes
         public async Task<Class> GetClassById(int id)
         {
             var result = await _repository.Get(id, "StudentClasses");
+            if (result == null)
+            {
+                throw new Exception("Class not found!");
+            }
             return result;
         }
 

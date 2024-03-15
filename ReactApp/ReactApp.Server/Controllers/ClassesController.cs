@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Classes;
@@ -9,6 +10,7 @@ namespace PJ01.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "ADMIN")]
     public class ClassesController : ControllerBase
     {
         private readonly IClassService _classService;
@@ -58,6 +60,20 @@ namespace PJ01.WebAPI.Controllers
                 return Ok();
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("details/{id}")]
+        public async Task<ActionResult> Details(int id)
+        {
+            try
+            {
+                var result = _mapper.Map<EditViewModel>(await _classService.GetClassById(id));
+                return Ok(result);
+
+            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

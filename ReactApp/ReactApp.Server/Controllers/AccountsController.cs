@@ -44,7 +44,6 @@ namespace PJ01.WebAPI.Controllers
             return null;
         }
 
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {

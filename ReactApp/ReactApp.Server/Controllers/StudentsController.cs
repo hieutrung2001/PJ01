@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PJ01.Core.Services.Students;
 using PJ01.Core.ViewModels.Paginations;
@@ -9,6 +10,7 @@ namespace PJ01.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "ADMIN")]
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _studentService;
