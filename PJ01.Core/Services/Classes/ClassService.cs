@@ -78,7 +78,7 @@ namespace T1PJ.Core.Services.Classes
 
         public async Task Update(Class c)
         {
-            var c1 = await _repository.Get(c.Id);
+            var c1 = await _repository.Get(c.Id, "StudentClasses");
             c1.Name = c.Name;
             if (c1.StudentClasses?.Count > 0)
             {
@@ -88,7 +88,7 @@ namespace T1PJ.Core.Services.Classes
                 var j = 0;
                 foreach (var item in c1.StudentClasses)
                 {
-                    if (c.StudentClasses.Contains(item))
+                    if (c.StudentClasses.FirstOrDefault(x => x.StudentId == item.StudentId) != null)
                     {
                         checks[j++] = true;
                         continue;
