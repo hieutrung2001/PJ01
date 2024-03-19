@@ -34,19 +34,20 @@ namespace PJ01.WebAPI.Controllers
 
         }
 
-        private UserModel GetCurrentUser()
+        [HttpGet("user")]
+        public ActionResult GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity != null)
             {
                 var userClaims = identity.Claims;
-                return new UserModel
+                return Ok(new UserModel
                 {
                     UserName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
                     Role = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value
-                };
+                });
             }
-            return null;
+            return BadRequest();
         }
 
         [AllowAnonymous]
@@ -60,6 +61,13 @@ namespace PJ01.WebAPI.Controllers
                 response = Ok(new { token });
             }
             return response;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public async Task Logout()
+        {
+            await _accountService.Logout();
         }
     }
 }

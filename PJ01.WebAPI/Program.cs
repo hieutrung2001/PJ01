@@ -35,7 +35,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
-    options.SignIn.RequireConfirmedAccount = true;
 })
     .AddSignInManager<SignInManager<User>>()
     .AddRoles<IdentityRole>()

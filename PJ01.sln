@@ -15,10 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PJ01.WebAPI", "PJ01.WebAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PJ01.Database", "PJ01.Database\PJ01.Database.csproj", "{E2E3485E-E931-4F34-90E7-42F8F04911BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactApp.Server", "ReactApp\ReactApp.Server\ReactApp.Server.csproj", "{C9014580-73C5-426E-B903-F8B4DCD07185}"
-EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "reactapp.client", "ReactApp\reactapp.client\reactapp.client.esproj", "{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,16 +45,6 @@ Global
 		{E2E3485E-E931-4F34-90E7-42F8F04911BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2E3485E-E931-4F34-90E7-42F8F04911BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2E3485E-E931-4F34-90E7-42F8F04911BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9014580-73C5-426E-B903-F8B4DCD07185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9014580-73C5-426E-B903-F8B4DCD07185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9014580-73C5-426E-B903-F8B4DCD07185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9014580-73C5-426E-B903-F8B4DCD07185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4B68E4D-A6D1-44E9-A2E4-672EE60DF91A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

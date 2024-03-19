@@ -36,7 +36,15 @@ namespace PJ01.Core.Services.Students
             var records = await _repository.QueryAsync();
             int recordsTotal = records.Count;
             int recordsFiltered = recordsTotal;
-            var results = await _repository.QueryAndSelectAsync(x => new IndexModel
+            
+            // recordsFiltered
+            if (!string.IsNullOrEmpty(model.Search.Value))
+            {
+                var filtered = await _repository.QueryAsync(
+                    !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null);
+                recordsFiltered = filtered.Count();
+            }
+            var results = await _repository.QueryAndSelectAsync(selector: x => new IndexModel
             {
                 Id = x.Id,
                 FullName = x.FullName,
@@ -44,37 +52,33 @@ namespace PJ01.Core.Services.Students
                 PhoneNumber = x.PhoneNumber,
                 Address = x.Address,
                 StudentClasses = x.StudentClasses,
-            }, pageSize: model.Length, page: model.Start / model.Length);
-            if (model.Order != null)
-            {
-                if (model.Order[0].Dir == "asc")
-                {
-                    if (model.Order[0].Column == 0)
-                    {
-                        results = results.OrderBy(data => data.FullName).ToList();
-                    } else if (model.Order[0].Column == 2)
-                    {
-                        results = results.OrderBy(data => data.Address).ToList();
-                    }
-                }
-                else
-                {
-                    if (model.Order[0].Column == 0)
-                    {
-                        results = results.OrderByDescending(data => data.FullName).ToList();
-                    }
-                    else if (model.Order[0].Column == 2)
-                    {
-                        results = results.OrderByDescending(data => data.Address).ToList();
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(model.Search.Value))
-            {
-                results = results.Where(m => m.FullName.ToLower().Contains(model.Search.Value.ToLower())
-                                            || m.Address.ToLower().Contains(model.Search.Value.ToLower())).ToList();
-                recordsFiltered = results.Count();
-            }
+            },
+            !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null,
+            pageSize: model.Length, page: model.Start / model.Length);
+            //if (model.Order != null)
+            //{
+            //    if (model.Order[0].Dir == "asc")
+            //    {
+            //        if (model.Order[0].Column == 0)
+            //        {
+            //            results = results.OrderBy(data => data.FullName).ToList();
+            //        } else if (model.Order[0].Column == 2)
+            //        {
+            //            results = results.OrderBy(data => data.Address).ToList();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (model.Order[0].Column == 0)
+            //        {
+            //            results = results.OrderByDescending(data => data.FullName).ToList();
+            //        }
+            //        else if (model.Order[0].Column == 2)
+            //        {
+            //            results = results.OrderByDescending(data => data.Address).ToList();
+            //        }
+            //    }
+            //}
             
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }

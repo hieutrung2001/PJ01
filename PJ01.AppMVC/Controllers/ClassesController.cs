@@ -51,7 +51,7 @@ namespace PJ01.AppMVC.Controllers
                 {
                     foreach (var item in StudentSelectList)
                     {
-                        results.Add(new StudentClass { StudentId = Int32.Parse(item) });
+                        results.Add(new StudentClass { StudentId = Int32.Parse(item), Student = await _studentService.GetStudentById(Int32.Parse(item)) });
                     }
                 }
                 var model = new CreateViewModel { Name = Name, StudentClasses = results };

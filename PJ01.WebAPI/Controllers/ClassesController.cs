@@ -21,7 +21,7 @@ namespace PJ01.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("CreateClass")]
+        [HttpPost("")]
         public async Task<ActionResult> Index([FromBody] Pagination model)
         {
             var result = await _classService.LoadTable(model);
