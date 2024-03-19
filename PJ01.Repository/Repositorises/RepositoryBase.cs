@@ -296,7 +296,7 @@ namespace PJ01.Infrastructure.Repositories
         }
 
 
-        private IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
+        public IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
         {
             string[] props = property.Split('.');
             Type type = typeof(T);

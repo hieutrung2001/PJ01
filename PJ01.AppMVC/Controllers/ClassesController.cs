@@ -51,7 +51,9 @@ namespace PJ01.AppMVC.Controllers
                 {
                     foreach (var item in StudentSelectList)
                     {
-                        results.Add(new StudentClass { StudentId = Int32.Parse(item), Student = await _studentService.GetStudentById(Int32.Parse(item)) });
+                        results.Add(new StudentClass { 
+                            StudentId = Int32.Parse(item), 
+                        });
                     }
                 }
                 var model = new CreateViewModel { Name = Name, StudentClasses = results };
@@ -120,11 +122,18 @@ namespace PJ01.AppMVC.Controllers
                 var results = new List<StudentClass>();
                 foreach (var item in StudentSelectList)
                 {
-                    results.Add(new StudentClass { StudentId = Int32.Parse(item), ClassId = Id });
+                    results.Add(new StudentClass { 
+                        StudentId = Int32.Parse(item), 
+                        ClassId = Id,
+                    });
                 }
                 try
                 {
-                    await _classService.Update(_mapper.Map<Class>(new EditViewModel { Id = Id, Name = Name, StudentClasses = results }));
+                    await _classService.Update(_mapper.Map<Class>(new EditViewModel { 
+                        Id = Id, 
+                        Name = Name, 
+                        StudentClasses = results 
+                    }));
                     return Json(new { status = true });
                 }
                 catch (Exception ex)
@@ -146,7 +155,23 @@ namespace PJ01.AppMVC.Controllers
         public async Task<JsonResult> LoadTable(Pagination model)
         {
             JsonData<IndexModel> result = await _classService.LoadTable(model);
-            var jsonData = new { draw = result.Draw, recordsFiltered = result.RecordsFiltered, recordsTotal = result.RecordsTotal, data = result.Data };
+            foreach (var item in result.Data)
+            {
+                foreach (var item1 in item.StudentClasses)
+                {
+                    var c = await _studentService.GetStudentById(item1.StudentId);
+                    item1.Student = new Student
+                    {
+                        FullName = c.FullName,
+                    };
+                }
+            }
+            var jsonData = new { 
+                draw = result.Draw, 
+                recordsFiltered = result.RecordsFiltered, 
+                recordsTotal = result.RecordsTotal, 
+                data = result.Data 
+            };
             return Json(jsonData);
 
         }

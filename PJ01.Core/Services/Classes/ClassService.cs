@@ -20,34 +20,40 @@ namespace T1PJ.Core.Services.Classes
             var records = await _repository.QueryAsync();
             int recordsTotal = records.Count;
             int recordsFiltered = recordsTotal;
+
+            // recordsFiltered
+            if (!string.IsNullOrEmpty(model.Search.Value))
+            {
+                var filtered = await _repository.QueryAsync(
+                    !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null);
+                recordsFiltered = filtered.Count();
+            }
+
             var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 StudentClasses = x.StudentClasses,
-            }, pageSize: model.Length, page: model.Start / model.Length);
-            if (model.Order != null)
-            {
-                if (model.Order[0].Dir == "asc")
-                {
-                    if (model.Order[0].Column == 0)
-                    {
-                        results = results.OrderBy(data => data.Name).ToList();
-                    }
-                }
-                else
-                {
-                    if (model.Order[0].Column == 0)
-                    {
-                        results = results.OrderByDescending(data => data.Name).ToList();
-                    }
-                }
-            }
-            if (!string.IsNullOrEmpty(model.Search.Value))
-            {
-                results = results.Where(m => m.Name.ToLower().Contains(model.Search.Value.ToLower())).ToList();
-                recordsFiltered = results.Count();
-            }
+            },
+            !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null,
+            pageSize: model.Length, page: model.Start / model.Length);
+            //if (model.Order != null)
+            //{
+            //    if (model.Order[0].Dir == "asc")
+            //    {
+            //        if (model.Order[0].Column == 0)
+            //        {
+            //            results = results.OrderBy(data => data.Name).ToList();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (model.Order[0].Column == 0)
+            //        {
+            //            results = results.OrderByDescending(data => data.Name).ToList();
+            //        }
+            //    }
+            //}
 
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }
@@ -83,27 +89,36 @@ namespace T1PJ.Core.Services.Classes
             if (c1.StudentClasses?.Count > 0)
             {
                 var results = c.StudentClasses;
-                List<bool> checks = new List<bool>(results.Count);
-                checks.AddRange(Enumerable.Repeat(false, results.Count));
-                var j = 0;
+                List<bool> checks = new List<bool>(100);
+                checks.AddRange(Enumerable.Repeat(false, 100));
+                var deleteElements = new List<StudentClass>();
                 foreach (var item in c1.StudentClasses)
                 {
                     if (c.StudentClasses.FirstOrDefault(x => x.StudentId == item.StudentId) != null)
                     {
-                        checks[j++] = true;
+                        checks[item.StudentId] = true;
                         continue;
                     }
                     else
+                    {
+                        deleteElements.Add(item);
+                    }
+                }
+                if (deleteElements.Count > 0)
+                {
+                    foreach (var item in deleteElements)
                     {
                         c1.StudentClasses.Remove(item);                        
                     }
                 }
                 for (var i = 0; i < c.StudentClasses.Count; ++i)
                 {
-                    if (!checks[i])
+                    if (!checks[c.StudentClasses[i].StudentId])
                     {
-                        var studentClass = new StudentClass { ClassId = c.Id, StudentId = c.StudentClasses[i].StudentId };
-                        c1.StudentClasses.Add(studentClass);
+                        var studentClass = new StudentClass { 
+                            ClassId = c.Id, 
+                            StudentId = c.StudentClasses[i].StudentId,
+                        };
                         c1.StudentClasses.Add(studentClass);
                     }
                 }
@@ -113,7 +128,10 @@ namespace T1PJ.Core.Services.Classes
                 c1.StudentClasses = new List<StudentClass>();
                 foreach (var item in c.StudentClasses)
                 {
-                    var studentClass = new StudentClass { ClassId = c.Id, StudentId = item.StudentId };
+                    var studentClass = new StudentClass { 
+                        ClassId = c.Id, 
+                        StudentId = item.StudentId,
+                    };
                     c1.StudentClasses.Add(studentClass);
                 }
             }

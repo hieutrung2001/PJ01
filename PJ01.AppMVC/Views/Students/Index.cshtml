@@ -10,7 +10,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.FullName)
             </th>
-            <th>@Html.DisplayNameFor(model => model.StudentClasses)</th>
+            <th>Students</th>
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
@@ -49,8 +49,8 @@
                         name: "FullName"
                     },
                     {
-                        data: "studentClasses",
-                        name: "StudentClasses"
+                        data: "studentClasses[, ].class.name",
+                        name: "StudentClasses[, ].Class.Name"
                     },
                     { data: "address", name: "Address" },
                     {

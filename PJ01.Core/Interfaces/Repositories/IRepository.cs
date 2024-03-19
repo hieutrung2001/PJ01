@@ -25,5 +25,6 @@ namespace PJ01.Core.Interfaces.Repositories
         Task Update(T obj, bool commit = true);
         Task TruncateTable(string tableName);
         Task AddRange(ICollection<T> obj, bool commit = true);
+        IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName);
     }
 }

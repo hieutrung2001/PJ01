@@ -3,9 +3,10 @@
 
 // Write your JavaScript code.
 // Initialization for ES Users
-import { Modal, Input, initMDB } from "mdb-ui-kit";
+// Initialization for ES Users
+import { Input, Ripple, initMDB } from "mdb-ui-kit";
 
-initMDB({ Modal, Input });
+initMDB({ Input, Ripple });
 //(() => {
 //    'use strict';
 

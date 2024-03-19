@@ -44,7 +44,8 @@ namespace PJ01.Core.Services.Students
                     !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null);
                 recordsFiltered = filtered.Count();
             }
-            var results = await _repository.QueryAndSelectAsync(selector: x => new IndexModel
+            var columns = new List<string>() { "FullName", "StudentClasses", "Address" };
+            var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
                 FullName = x.FullName,
@@ -54,6 +55,7 @@ namespace PJ01.Core.Services.Students
                 StudentClasses = x.StudentClasses,
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null,
+            orderBy: m => _repository.ApplyOrder(m, columns[model.Order[0].Column], model.Order[0].Dir), 
             pageSize: model.Length, page: model.Start / model.Length);
             //if (model.Order != null)
             //{

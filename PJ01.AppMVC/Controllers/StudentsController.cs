@@ -5,6 +5,7 @@ using PJ01.Core.Services.Students;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Students;
 using PJ01.Domain.Entities;
+using T1PJ.Core.Services.Classes;
 
 namespace PJ01.AppMVC.Controllers
 {
@@ -13,11 +14,13 @@ namespace PJ01.AppMVC.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IStudentService _service;
+        private readonly IClassService _classService;
 
-        public StudentsController(IMapper mapper, IStudentService service)
+        public StudentsController(IMapper mapper, IStudentService service, IClassService classService)
         {
             _mapper = mapper;
             _service = service;
+            _classService = classService;
         }
 
         public async Task<IActionResult> Index(int? id)
@@ -112,6 +115,17 @@ namespace PJ01.AppMVC.Controllers
         public async Task<JsonResult> LoadTable(Pagination model)
         {
             JsonData<IndexModel> result = await _service.LoadTable(model);
+            foreach (var item in result.Data)
+            {
+                foreach (var item1 in item.StudentClasses)
+                {
+                    var c = await _classService.GetClassById(item1.ClassId);
+                    item1.Class = new Class
+                    {
+                        Name = c.Name,
+                    };
+                }
+            }
             var jsonData = new { draw = result.Draw, recordsFiltered = result.RecordsFiltered, recordsTotal = result.RecordsTotal, data = result.Data };
             return Json(jsonData);
 
