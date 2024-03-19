@@ -3,6 +3,7 @@ using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Classes;
 using PJ01.Domain.Entities;
 using PJ01.Core.Interfaces.Repositories;
+using PJ01.Core.Helpers.Sorting;
 
 namespace T1PJ.Core.Services.Classes
 {
@@ -29,6 +30,19 @@ namespace T1PJ.Core.Services.Classes
                 recordsFiltered = filtered.Count();
             }
 
+            var columnsName = new List<string>() { "Name", "StudentClasses" };
+            var sortDirection = SortingHelper.SortDirection.Ascending;
+            if (model.Order != null)
+            {
+                sortDirection = model.Order[0].Dir == "asc" ? SortingHelper.SortDirection.Ascending : SortingHelper.SortDirection.Descending;
+            }
+            var sortByInfo = new SortingHelper.SortByInfo
+            {
+                Direction = sortDirection,
+                PropertyName = model.Order != null ? columnsName[model.Order[0].Column] : "",
+
+            };
+
             var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
@@ -37,23 +51,6 @@ namespace T1PJ.Core.Services.Classes
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null,
             pageSize: model.Length, page: model.Start / model.Length);
-            //if (model.Order != null)
-            //{
-            //    if (model.Order[0].Dir == "asc")
-            //    {
-            //        if (model.Order[0].Column == 0)
-            //        {
-            //            results = results.OrderBy(data => data.Name).ToList();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (model.Order[0].Column == 0)
-            //        {
-            //            results = results.OrderByDescending(data => data.Name).ToList();
-            //        }
-            //    }
-            //}
 
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }

@@ -296,9 +296,9 @@ namespace PJ01.Infrastructure.Repositories
         }
 
 
-        public IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
+        private IOrderedQueryable<T> ApplyOrder<T>(IQueryable<T> source, string property, string methodName)
         {
-            string[] props = property.Split('.');
+            string[] props = property.Split('.'); // FullName.Address
             Type type = typeof(T);
             ParameterExpression arg = Expression.Parameter(type, "x");
             Expression expr = arg;
@@ -322,6 +322,7 @@ namespace PJ01.Infrastructure.Repositories
                 .Invoke(null, new object[] { source, lambda });
             return (IOrderedQueryable<T>)result;
         }
+
 
     }
 }

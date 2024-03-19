@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PJ01.Core.Helpers.Sorting;
 using PJ01.Core.Interfaces.Repositories;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Students;
@@ -44,7 +45,19 @@ namespace PJ01.Core.Services.Students
                     !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null);
                 recordsFiltered = filtered.Count();
             }
-            var columns = new List<string>() { "FullName", "StudentClasses", "Address" };
+
+            var columnsName = new List<string>() { "FullName", "StudentClasses", "Address" };
+            var sortDirection = SortingHelper.SortDirection.Ascending;
+            if (model.Order != null)
+            {
+                sortDirection = model.Order[0].Dir == "asc" ? SortingHelper.SortDirection.Ascending : SortingHelper.SortDirection.Descending;
+            }
+            var sortByInfo = new SortingHelper.SortByInfo
+            {
+                Direction = sortDirection,
+                PropertyName = model.Order != null ? columnsName[model.Order[0].Column] : "",
+
+            };
             var results = await _repository.QueryAndSelectAsync(x => new IndexModel
             {
                 Id = x.Id,
@@ -55,32 +68,8 @@ namespace PJ01.Core.Services.Students
                 StudentClasses = x.StudentClasses,
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null,
-            orderBy: m => _repository.ApplyOrder(m, columns[model.Order[0].Column], model.Order[0].Dir), 
+            orderBy: m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
-            //if (model.Order != null)
-            //{
-            //    if (model.Order[0].Dir == "asc")
-            //    {
-            //        if (model.Order[0].Column == 0)
-            //        {
-            //            results = results.OrderBy(data => data.FullName).ToList();
-            //        } else if (model.Order[0].Column == 2)
-            //        {
-            //            results = results.OrderBy(data => data.Address).ToList();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (model.Order[0].Column == 0)
-            //        {
-            //            results = results.OrderByDescending(data => data.FullName).ToList();
-            //        }
-            //        else if (model.Order[0].Column == 2)
-            //        {
-            //            results = results.OrderByDescending(data => data.Address).ToList();
-            //        }
-            //    }
-            //}
             
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
         }
