@@ -10,7 +10,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.FullName)
             </th>
-            <th>Students</th>
+            <th>Classes</th>
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
@@ -28,6 +28,7 @@
                 ],
                 serverSide: true,
                 processing: true,
+                searchable: true,
                 ajax: {
                     url: '@Url.Action("LoadTable", "Students")',
                     type: 'POST',
@@ -40,7 +41,7 @@
                         orderable: true, className: 'reorder', targets: [0, 2]
                     },
                     {
-                        orderable: false, targets: '_all'
+                        orderable: false, searchable: true, targets: '_all',
                     },
                 ],
                 columns: [
@@ -49,8 +50,20 @@
                         name: "FullName"
                     },
                     {
-                        data: "studentClasses[, ].class.name",
-                        name: "StudentClasses[, ].Class.Name"
+                        data: 'studentClasses',
+                        name: 'StudentClasses',
+                        render: function (data, type, row, meta) {
+                            var a = '';
+                            console.log(data)
+                            for (let i = 0; i < data.length; ++i) {
+                                if (i== data.length - 1) {
+                                    a += `<a href="/Classes/Details/${data[i].classId}">${data[i].class.name}</a>`
+                                } else {
+                                    a += `<a href="/Classes/Details/${data[i].classId}">${data[i].class.name}</a>, `
+                                }
+                            }
+                            return a
+                        }
                     },
                     { data: "address", name: "Address" },
                     {

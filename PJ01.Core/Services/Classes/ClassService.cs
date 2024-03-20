@@ -30,6 +30,7 @@ namespace T1PJ.Core.Services.Classes
                 recordsFiltered = filtered.Count();
             }
 
+            // sorting
             var columnsName = new List<string>() { "Name", "StudentClasses" };
             var sortDirection = SortingHelper.SortDirection.Ascending;
             if (model.Order != null)
@@ -50,6 +51,7 @@ namespace T1PJ.Core.Services.Classes
                 StudentClasses = x.StudentClasses,
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null,
+            m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
 
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };

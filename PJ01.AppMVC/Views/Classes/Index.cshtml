@@ -41,8 +41,20 @@
                             name: "Name"
                         },
                         {
-                        data: "studentClasses[, ].student.fullName",
-                        name: "StudentClasses[, ].Student.FullName"
+                            data: 'studentClasses',
+                            name: 'StudentClasses',
+                            render: function (data, type, row, meta) {
+                                var a = '';
+                                console.log(data)
+                                for (let i = 0; i < data.length; ++i) {
+                                    if (i == data.length - 1) {
+                                        a += `<a href="/Students/Details/${data[i].studentId}">${data[i].student.fullName}</a>`
+                                    } else {
+                                    a += `<a href="/Students/Details/${data[i].studentId}">${data[i].student.fullName}</a>, `
+                                    }
+                                }
+                                return a
+                            }
                         },
                         {
                             data: "id",

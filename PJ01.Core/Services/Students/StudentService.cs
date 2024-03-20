@@ -42,7 +42,8 @@ namespace PJ01.Core.Services.Students
             if (!string.IsNullOrEmpty(model.Search.Value))
             {
                 var filtered = await _repository.QueryAsync(
-                    !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null);
+                    !string.IsNullOrEmpty(model.Search.Value) ? 
+                    x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) || x.StudentClasses.Select(p => p.Class).Where(p => p.Name.Contains(model.Search.Value)).Any() : null);
                 recordsFiltered = filtered.Count();
             }
 
@@ -68,7 +69,7 @@ namespace PJ01.Core.Services.Students
                 StudentClasses = x.StudentClasses,
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null,
-            orderBy: m => SortingHelper.ApplyOrderBy(m, sortByInfo),
+            m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
             
             return new JsonData<IndexModel> { Draw = model.Draw, RecordsFiltered = recordsFiltered, RecordsTotal = recordsTotal, Data = (List<IndexModel>)results };
