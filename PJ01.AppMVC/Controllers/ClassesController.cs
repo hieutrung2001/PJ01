@@ -147,6 +147,14 @@ namespace PJ01.AppMVC.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var c = await _classService.GetClassById(id);
+            if (c.StudentClasses.Any())
+            {
+                foreach (var item in c.StudentClasses)
+                {
+                    var s = await _studentService.GetStudentById(item.StudentId);
+                    item.Student = new Student { FullName = s.FullName };
+                }
+            }
             return View(_mapper.Map<EditViewModel>(c));
         }
 

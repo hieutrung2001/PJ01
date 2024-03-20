@@ -11,35 +11,33 @@
         <form method="post" id="formEditStudent">
             <input type="hidden" asp-for="Id" />
             <!-- Fullname input -->
-            <div data-mdb-input-init class="form-outline mb-4">
+            <div class="col-auto">
                 <input type="text" asp-for="FullName" class="form-control" />
                 <label class="form-label" asp-for="FullName"></label>
             </div>
 
             <!-- Date of birth input -->
-            <div data-mdb-input-init class="form-outline mb-4">
+            <div class="col-auto">
                 <input asp-for="Dob" class="form-control" />
                 <label class="form-label" asp-for="Dob"></label>
             </div>
 
             <!-- Phone number input -->
-            <div data-mdb-input-init class="form-outline mb-4">
+            <div class="col-auto">
                 <input asp-for="PhoneNumber" class="form-control" />
                 <label class="form-label" asp-for="PhoneNumber"></label>
             </div>
 
             <!-- Address input -->
-            <div data-mdb-input-init class="form-outline mb-4">
+            <div class="col-auto">
                 <input asp-for="Address" class="form-control" />
                 <label class="form-label" asp-for="Address"></label>
             </div>
 
             <!-- Submit button -->
-            <div class="form-group d-flex justify-content-between">
+            <div class="form-group d-flex justify-content-between mt-4">
                 <button type="button" class="btn bg-secondary" id="btnPrevious" data-mdb-ripple-init>Back</button>
             </div>
-            @* <button data-mdb-ripple-init type="button" id="btnSubmit" class="btn btn-primary btn- mb-4">Save</button>
-            *@
         </form>
     </div>
 </div>
