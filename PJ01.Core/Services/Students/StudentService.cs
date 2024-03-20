@@ -43,7 +43,7 @@ namespace PJ01.Core.Services.Students
             {
                 var filtered = await _repository.QueryAsync(
                     !string.IsNullOrEmpty(model.Search.Value) ? 
-                    x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) || x.StudentClasses.Select(p => p.Class).Where(p => p.Name.Contains(model.Search.Value)).Any() : null);
+                    x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null);
                 recordsFiltered = filtered.Count();
             }
 
