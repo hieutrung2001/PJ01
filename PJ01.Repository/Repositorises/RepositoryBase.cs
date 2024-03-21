@@ -225,6 +225,29 @@ namespace PJ01.Infrastructure.Repositories
         }
 
         /// <summary>
+        /// Count records filtered
+        /// </summary>=
+        /// <param name="filter"></param>
+        /// <returns>Object</returns>
+        public async Task<int> CountAsync(Expression<Func<T, bool>>? filter = null)
+        {
+            // get object from database only query data
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
+
+
+            // if fillter
+            if (filter != null)
+            {
+                // fillter by condition
+                query = query.Where(filter);
+            }
+
+            // return result
+            return await query.CountAsync();
+        }
+
+
+        /// <summary>
         /// Get Object by id
         /// </summary>
         /// <param name="id"></param>

@@ -25,8 +25,13 @@ namespace T1PJ.Core.Services.Classes
             // recordsFiltered
             if (!string.IsNullOrEmpty(model.Search.Value))
             {
-                var filtered = await _repository.QueryAsync(
-                    !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null);
+                var filtered = await _repository.QueryAndSelectAsync(x => new IndexModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    StudentClasses = x.StudentClasses,
+                },
+                x => x.Name.Contains(model.Search.Value));
                 recordsFiltered = filtered.Count();
             }
 
