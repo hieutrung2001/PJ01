@@ -58,15 +58,8 @@ namespace PJ01.AppMVC.Controllers
                 }
                 var model = new CreateViewModel { Name = Name, StudentClasses = results };
                 var c = _mapper.Map<Class>(model);
-                try
-                {
-                    await _classService.Create(c);
-                    return Json(new { status = true });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { status = false, message = ex.Message });
-                }
+                await _classService.Create(c);
+                return Json(new { status = true });
             }
             return View();
         }
@@ -127,19 +120,13 @@ namespace PJ01.AppMVC.Controllers
                         ClassId = Id,
                     });
                 }
-                try
+                await _classService.Update(_mapper.Map<Class>(new EditViewModel
                 {
-                    await _classService.Update(_mapper.Map<Class>(new EditViewModel { 
-                        Id = Id, 
-                        Name = Name, 
-                        StudentClasses = results 
-                    }));
-                    return Json(new { status = true });
-                }
-                catch (Exception ex)
-                {
-                    return Json(new { status = false, message = ex.Message });
-                }
+                    Id = Id,
+                    Name = Name,
+                    StudentClasses = results
+                }));
+                return Json(new { status = true });
             }
             return View();
         }
@@ -171,6 +158,7 @@ namespace PJ01.AppMVC.Controllers
                     item1.Student = new Student
                     {
                         FullName = c.FullName,
+                        Id = c.Id
                     };
                 }
             }

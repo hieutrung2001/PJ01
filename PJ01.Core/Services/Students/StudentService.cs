@@ -42,7 +42,9 @@ namespace PJ01.Core.Services.Students
             if (!string.IsNullOrEmpty(model.Search.Value))
             {
                 recordsFiltered = await _repository.CountAsync(
-                x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value));
+                x => x.FullName.Contains(model.Search.Value) 
+                || x.Address.Contains(model.Search.Value)
+                || x.PhoneNumber.ToString().Contains(model.Search.Value));
             }
 
             var columnsName = new List<string>() { "FullName", "StudentClasses", "Address" };
@@ -66,7 +68,9 @@ namespace PJ01.Core.Services.Students
                 Address = x.Address,
                 StudentClasses = x.StudentClasses,
             },
-            !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) || x.Address.Contains(model.Search.Value) : null,
+            !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) 
+            || x.Address.Contains(model.Search.Value)
+            || x.PhoneNumber.ToString().Contains(model.Search.Value) : null,
             m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
             

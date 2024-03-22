@@ -123,6 +123,7 @@ namespace PJ01.AppMVC.Controllers
                     item1.Class = new Class
                     {
                         Name = c.Name,
+                        Id = c.Id,
                     };
                 }
             }

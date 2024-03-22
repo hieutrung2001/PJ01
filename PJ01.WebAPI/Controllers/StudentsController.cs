@@ -5,6 +5,7 @@ using PJ01.Core.Services.Students;
 using PJ01.Core.ViewModels.Paginations;
 using PJ01.Core.ViewModels.Requests.Students;
 using PJ01.Domain.Entities;
+using T1PJ.Core.Services.Classes;
 
 namespace PJ01.WebAPI.Controllers
 {
@@ -13,18 +14,42 @@ namespace PJ01.WebAPI.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _studentService;
+        private readonly IClassService _classService;
         private readonly IMapper _mapper;
 
-        public StudentsController(IStudentService studentService, IMapper mapper)
+        public StudentsController(
+            IStudentService studentService, 
+            IMapper mapper, 
+            IClassService classService)
         {
             _studentService = studentService;
             _mapper = mapper;
+            _classService = classService;
+        }
+
+        [HttpGet("get")]
+        public async Task<IActionResult> GetAll()
+        {
+            var results = await _studentService.GetAll();
+            return Ok(results);
         }
 
         [HttpPost("")]
         public async Task<ActionResult> Index([FromBody] Pagination model)
         {
             var result = await _studentService.LoadTable(model);
+            foreach (var item in result.Data)
+            {
+                foreach (var item1 in item.StudentClasses)
+                {
+                    var c = await _classService.GetClassById(item1.ClassId);
+                    item1.Class = new Class
+                    {
+                        Name = c.Name,
+                        Id = c.Id,
+                    };
+                }
+            }
             return Ok(result);
         }
 
