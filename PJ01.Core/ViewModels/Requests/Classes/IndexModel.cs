@@ -8,6 +8,6 @@ namespace PJ01.Core.ViewModels.Requests.Classes
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public IList<StudentClass> StudentClasses { get; set; }
+        public List<Student> Students { get; set; }
     }
 }

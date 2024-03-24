@@ -44,7 +44,12 @@ namespace PJ01.Core.Services.Students
                 recordsFiltered = await _repository.CountAsync(
                 x => x.FullName.Contains(model.Search.Value) 
                 || x.Address.Contains(model.Search.Value)
-                || x.PhoneNumber.ToString().Contains(model.Search.Value));
+                || x.PhoneNumber.ToString().Contains(model.Search.Value)
+                || x.StudentClasses.Select(m => new Class
+                {
+                    Name = m.Class.Name
+                }).Any(c => c.Name.Contains(model.Search.Value))
+                );
             }
 
             var columnsName = new List<string>() { "FullName", "StudentClasses", "Address" };
@@ -66,11 +71,20 @@ namespace PJ01.Core.Services.Students
                 Dob = x.Dob,
                 PhoneNumber = x.PhoneNumber,
                 Address = x.Address,
-                StudentClasses = x.StudentClasses,
+                Classes = x.StudentClasses.Select(m => new Class
+                {
+                    Name = m.Class.Name,
+                    Id = m.Class.Id
+                }).ToList(),
             },
             !string.IsNullOrEmpty(model.Search.Value) ? x => x.FullName.Contains(model.Search.Value) 
             || x.Address.Contains(model.Search.Value)
-            || x.PhoneNumber.ToString().Contains(model.Search.Value) : null,
+            || x.PhoneNumber.ToString().Contains(model.Search.Value)
+            || x.StudentClasses.Select(m => new Class
+            {
+                Name = m.Class.Name
+            }).Any(c => c.Name.Contains(model.Search.Value))
+            : null,
             m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
             
@@ -116,31 +130,6 @@ namespace PJ01.Core.Services.Students
             }
             await _repository.Delete(student);
             
-        }
-
-        public async Task<List<Student>> GetStudentsOfClass(int classId)
-        {
-            var studentsOfClass = new List<Student>();
-            var students = await GetAll();
-            if (students != null)
-            {
-                foreach (var item in students)
-                {
-                    if (item.StudentClasses?.Count > 0)
-                    {
-                        foreach (var y in item.StudentClasses)
-                        {
-                            if (y.ClassId == classId)
-                            {
-                                studentsOfClass.Add(item);
-                                break;
-                            }
-                        }
-                    }
-                }
-                return studentsOfClass;
-            }
-            return [];
         }
 
     }

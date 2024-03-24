@@ -150,18 +150,6 @@ namespace PJ01.AppMVC.Controllers
         public async Task<JsonResult> LoadTable(Pagination model)
         {
             JsonData<IndexModel> result = await _classService.LoadTable(model);
-            foreach (var item in result.Data)
-            {
-                foreach (var item1 in item.StudentClasses)
-                {
-                    var c = await _studentService.GetStudentById(item1.StudentId);
-                    item1.Student = new Student
-                    {
-                        FullName = c.FullName,
-                        Id = c.Id
-                    };
-                }
-            }
             var jsonData = new { 
                 draw = result.Draw, 
                 recordsFiltered = result.RecordsFiltered, 

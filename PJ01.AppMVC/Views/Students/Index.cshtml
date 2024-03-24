@@ -50,16 +50,16 @@
                         name: "FullName"
                     },
                     {
-                        data: 'studentClasses',
-                        name: 'StudentClasses',
+                        data: 'classes',
+                        name: 'Classes',
                         render: function (data, type, row, meta) {
                             var a = '';
                             console.log(data)
                             for (let i = 0; i < data.length; ++i) {
                                 if (i== data.length - 1) {
-                                    a += `<a href="/Classes/Details/${data[i].classId}">${data[i].class.name}</a>`
+                                    a += `<a href="/Classes/Details/${data[i].id}">${data[i].name}</a>`
                                 } else {
-                                    a += `<a href="/Classes/Details/${data[i].classId}">${data[i].class.name}</a>, `
+                                    a += `<a href="/Classes/Details/${data[i].id}">${data[i].name}</a>, `
                                 }
                             }
                             return a

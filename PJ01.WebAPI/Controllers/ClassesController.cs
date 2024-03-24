@@ -32,18 +32,18 @@ namespace PJ01.WebAPI.Controllers
         public async Task<ActionResult> Index([FromBody] Pagination model)
         {
             var result = await _classService.LoadTable(model);
-            foreach (var item in result.Data)
-            {
-                foreach (var item1 in item.StudentClasses)
-                {
-                    var c = await _studentService.GetStudentById(item1.StudentId);
-                    item1.Student = new Student
-                    {
-                        FullName = c.FullName,
-                        Id = c.Id
-                    };
-                }
-            }
+            //foreach (var item in result.Data)
+            //{
+            //    foreach (var item1 in item.StudentClasses)
+            //    {
+            //        var c = await _studentService.GetStudentById(item1.StudentId);
+            //        item1.Student = new Student
+            //        {
+            //            FullName = c.FullName,
+            //            Id = c.Id
+            //        };
+            //    }
+            //}
             return Ok(result);
         }
 

@@ -9,7 +9,6 @@ namespace PJ01.Core.Services.Students
     {
         Task<JsonData<IndexModel>> LoadTable(Pagination model);
         Task<List<Student>> GetAll();
-        Task<List<Student>> GetStudentsOfClass(int classId);
         Task<Student> GetStudentById(int id);
         Task<Student> Create(CreateViewModel student);
         Task<Student> Update(EditViewModel student);

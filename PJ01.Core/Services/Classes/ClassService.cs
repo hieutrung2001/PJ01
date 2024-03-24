@@ -25,14 +25,13 @@ namespace T1PJ.Core.Services.Classes
             // recordsFiltered
             if (!string.IsNullOrEmpty(model.Search.Value))
             {
-                var filtered = await _repository.QueryAndSelectAsync(x => new IndexModel
+                recordsFiltered = await _repository.CountAsync(
+                x => x.Name.Contains(model.Search.Value)
+                || x.StudentClasses.Select(m => new Student
                 {
-                    Id = x.Id,
-                    Name = x.Name,
-                    StudentClasses = x.StudentClasses,
-                },
-                x => x.Name.Contains(model.Search.Value));
-                recordsFiltered = filtered.Count();
+                    FullName = m.Student.FullName
+                }).Any(c => c.FullName.Contains(model.Search.Value.Trim()))
+                );
             }
 
             // sorting
@@ -53,9 +52,20 @@ namespace T1PJ.Core.Services.Classes
             {
                 Id = x.Id,
                 Name = x.Name,
-                StudentClasses = x.StudentClasses,
+                Students = x.StudentClasses.Select(m => new Student
+                {
+                    Id = m.Student.Id,
+                    FullName = m.Student.FullName,
+                    Dob = m.Student.Dob,
+                    Address = m.Student.Address,
+                }).ToList(),
             },
-            !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value) : null,
+            !string.IsNullOrEmpty(model.Search.Value) ? x => x.Name.Contains(model.Search.Value)
+            || x.StudentClasses.Select(m => new Student
+            {
+                FullName = m.Student.FullName
+            }).Any(c => c.FullName.Contains(model.Search.Value.Trim()))
+            : null,
             m => SortingHelper.ApplyOrderBy(m, sortByInfo),
             pageSize: model.Length, page: model.Start / model.Length);
 
